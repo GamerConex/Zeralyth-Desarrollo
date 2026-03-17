@@ -258,7 +258,18 @@ const login = async (req, res) => {
 
     req.session.userId = user._id.toString();
     req.session.userRole = user.role;
-    return res.redirect('/app');
+
+    return req.session.save((sessionError) => {
+      if (sessionError) {
+        return res.status(500).render('login', {
+          title: 'Iniciar sesión',
+          error: 'No se pudo guardar tu sesión. Intenta nuevamente.',
+          info: null,
+          verifyUrl: null
+        });
+      }
+      return res.redirect('/app');
+    });
   } catch (error) {
     return res.status(500).render('login', {
       title: 'Iniciar sesión',
