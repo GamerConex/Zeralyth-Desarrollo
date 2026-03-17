@@ -1,0 +1,11 @@
+<%- include('partials/header') %>
+<section class="card small">
+  <h2>Registro</h2>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <form method="POST" action="/register">
+    <input type="email" name="email" placeholder="Correo" required>
+    <input type="password" name="password" placeholder="Contraseña" required minlength="6">
+    <button type="submit">Crear cuenta</button>
+  </form>
+</section>
+<%- include('partials/footer') %>

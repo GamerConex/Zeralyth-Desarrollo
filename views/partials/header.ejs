@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | Las Cotorras</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Las Cotorras</h1>
+    <nav>
+      <a href="/">Inicio</a>
+      <a href="/descargar">Descargar</a>
+      <a href="/contacto">Contacto</a>
+      <% if (currentUser) { %>
+        <a href="/app">Aplicación</a>
+        <% if (['owner','admin'].includes(currentUser.role)) { %><a href="/owner-chat">Owner Chat</a><% } %>
+        <form action="/logout" method="POST" class="inline"><button type="submit">Salir</button></form>
+      <% } else { %>
+        <a href="/login">Entrar</a>
+        <a href="/register">Registro</a>
+      <% } %>
+    </nav>
+  </header>
+  <main>

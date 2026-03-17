@@ -1,0 +1,10 @@
+<%- include('partials/header') %>
+<section class="card small">
+  <h2>Verifica tu correo</h2>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <form method="POST" action="/verify-email">
+    <input type="text" name="code" placeholder="Código de 6 dígitos" required>
+    <button type="submit">Verificar</button>
+  </form>
+</section>
+<%- include('partials/footer') %>

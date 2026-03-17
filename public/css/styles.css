@@ -1,0 +1,35 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+header {
+  background: #1e293b;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+nav { display: flex; gap: 12px; align-items: center; }
+a { color: #38bdf8; text-decoration: none; }
+main { padding: 24px; }
+.card {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+.small { max-width: 420px; }
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: none;
+}
+button { background: #22c55e; color: #fff; cursor: pointer; }
+.error { color: #f87171; }
+.inline { display: inline; }
+.chat { height: 280px; overflow: auto; background: #334155; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
