@@ -48,8 +48,8 @@ const showVerify = async (req, res) => {
 
   res.render('verify', {
     title: 'Verificar correo',
-    error: null,
-    info: null,
+    error: req.query.error || null,
+    info: req.query.info || null,
     email,
     attemptsLeft: state.attemptsLeft,
     waitLeftMs: state.waitLeftMs
@@ -214,6 +214,16 @@ const login = async (req, res) => {
   try {
     const email = (req.body.email || '').toLowerCase().trim();
     const { password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).render('login', {
+        title: 'Iniciar sesión',
+        error: 'Debes completar correo y contraseña.',
+        info: null,
+        verifyUrl: null
+      });
+    }
+
     const user = await User.findOne({ email });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -227,7 +237,7 @@ const login = async (req, res) => {
 
     if (!user.isVerified) {
       const isExpired = !user.verificationCodeExpiresAt || user.verificationCodeExpiresAt <= new Date();
-      let info = 'Tu correo no está verificado. Verifícalo para continuar.';
+      let info = 'Tu correo no está verificado. Ingresa el código para continuar.';
 
       if (isExpired) {
         const state = getResendState(user);
@@ -235,20 +245,15 @@ const login = async (req, res) => {
           user.verificationResendCount = (user.verificationResendCount || 0) + 1;
           await user.save();
           await issueVerificationCode(user, { force: true });
-          info = 'Tu código había caducado. Te enviamos uno nuevo automáticamente.';
+          info = 'Tu código había caducado. Se envió uno nuevo automáticamente.';
         } else if (state.waitLeftMs > 0) {
-          info = `Tu código caducó. Espera ${Math.ceil(state.waitLeftMs / 1000)} segundos o usa el botón de reenvío en verificación.`;
+          info = `Tu código caducó. Espera ${Math.ceil(state.waitLeftMs / 1000)} segundos para reenviar.`;
         } else {
           info = 'Tu código caducó y alcanzaste el límite de reenvíos (4/4).';
         }
       }
 
-      return res.render('login', {
-        title: 'Iniciar sesión',
-        error: null,
-        info,
-        verifyUrl: `/verify-email?email=${encodeURIComponent(email)}`
-      });
+      return res.redirect(`/verify-email?email=${encodeURIComponent(email)}&info=${encodeURIComponent(info)}`);
     }
 
     req.session.userId = user._id.toString();
