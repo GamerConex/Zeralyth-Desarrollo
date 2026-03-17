@@ -3,6 +3,8 @@
   <h2>Registro</h2>
   <% if (error) { %><p class="error"><%= error %></p><% } %>
   <form method="POST" action="/register">
+    <input type="hidden" name="formStartedAt" value="<%= formStartedAt %>">
+    <input type="text" name="website" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
     <input type="email" name="email" placeholder="Correo" required>
     <input type="password" name="password" placeholder="Contraseña" required minlength="6">
     <button type="submit">Crear cuenta</button>

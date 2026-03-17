@@ -7,6 +7,8 @@ const userSchema = new mongoose.Schema(
     isVerified: { type: Boolean, default: false },
     verificationCode: { type: String, default: null },
     verificationCodeExpiresAt: { type: Date, default: null },
+    verificationResendCount: { type: Number, default: 0 },
+    lastVerificationSentAt: { type: Date, default: null },
     role: {
       type: String,
       enum: ['user', 'owner', 'admin'],

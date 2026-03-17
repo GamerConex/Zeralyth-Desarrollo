@@ -2,9 +2,23 @@
 <section class="card small">
   <h2>Verifica tu correo</h2>
   <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <% if (info) { %><p class="info"><%= info %></p><% } %>
   <form method="POST" action="/verify-email">
+    <input type="email" name="email" placeholder="Correo" required value="<%= email || '' %>">
     <input type="text" name="code" placeholder="Código de 6 dígitos" required>
     <button type="submit">Verificar</button>
   </form>
+
+  <form method="POST" action="/verify-email/resend">
+    <input type="hidden" name="email" value="<%= email || '' %>">
+    <button type="submit" <%= (!email || attemptsLeft <= 0 || waitLeftMs > 0) ? 'disabled' : '' %>>
+      Reenviar código
+    </button>
+  </form>
+
+  <p class="meta">Intentos de reenvío restantes: <%= attemptsLeft %>/4</p>
+  <% if (waitLeftMs > 0) { %>
+    <p class="meta">Espera obligatoria: <%= Math.ceil(waitLeftMs / 1000) %> segundos.</p>
+  <% } %>
 </section>
 <%- include('partials/footer') %>
