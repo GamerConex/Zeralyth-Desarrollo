@@ -8,6 +8,31 @@ const MAX_RESEND_ATTEMPTS = 4;
 
 const generateCode = () => Math.floor(100000 + Math.random() * 900000).toString();
 
+
+const getRequestMeta = (req, email) => ({
+  timestamp: new Date().toISOString(),
+  email,
+  ip: req.ip || req.connection?.remoteAddress || 'unknown',
+  userAgent: req.get('user-agent') || 'unknown'
+});
+
+const logLoginAttempt = (req, email, outcome, extra = {}) => {
+  console.log('[AUTH][LOGIN]', {
+    ...getRequestMeta(req, email),
+    outcome,
+    ...extra
+  });
+};
+
+const logLoginError = (req, email, error, stage) => {
+  console.error('[AUTH][LOGIN][ERROR]', {
+    ...getRequestMeta(req, email),
+    stage,
+    message: error?.message || 'Unknown error',
+    stack: error?.stack || null
+  });
+};
+
 const issueVerificationCode = async (user, { force = false } = {}) => {
   const now = new Date();
   const isCodeValid = user.verificationCode && user.verificationCodeExpiresAt && user.verificationCodeExpiresAt > now;
@@ -222,16 +247,19 @@ const login = async (req, res) => {
     const { password } = req.body;
 
     if (!email || !password) {
+      logLoginAttempt(req, email, 'missing_fields');
       return renderLogin(res, { error: 'Debes completar correo y contraseña.' }, 400);
     }
 
     const user = await User.findOne({ email });
     if (!user) {
+      logLoginAttempt(req, email, 'user_not_found');
       return renderLogin(res, { error: 'Credenciales inválidas.' }, 401);
     }
 
     const passwordMatches = await bcrypt.compare(password, user.password);
     if (!passwordMatches) {
+      logLoginAttempt(req, email, 'invalid_password', { userId: user._id.toString() });
       return renderLogin(res, { error: 'Credenciales inválidas.' }, 401);
     }
 
@@ -253,11 +281,16 @@ const login = async (req, res) => {
         }
       }
 
+      logLoginAttempt(req, email, 'not_verified', {
+        userId: user._id.toString(),
+        verificationExpired: isExpired
+      });
       return res.redirect(`/verify-email?email=${encodeURIComponent(email)}&info=${encodeURIComponent(info)}`);
     }
 
     req.session.regenerate((regenerateError) => {
       if (regenerateError) {
+        logLoginError(req, email, regenerateError, 'session_regenerate');
         return renderLogin(res, { error: 'No se pudo iniciar tu sesión. Intenta nuevamente.' }, 500);
       }
 
@@ -273,12 +306,18 @@ const login = async (req, res) => {
 
       return req.session.save((sessionError) => {
         if (sessionError) {
+          logLoginError(req, email, sessionError, 'session_save');
           return renderLogin(res, { error: 'No se pudo guardar tu sesión. Intenta nuevamente.' }, 500);
         }
+        logLoginAttempt(req, email, 'success', {
+          userId: user._id.toString(),
+          role: user.role
+        });
         return res.redirect('/dashboard');
       });
     });
   } catch (error) {
+    logLoginError(req, (req.body.email || '').toLowerCase().trim(), error, 'login_controller');
     return renderLogin(res, { error: 'Error al iniciar sesión.' }, 500);
   }
 };
