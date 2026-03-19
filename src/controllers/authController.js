@@ -33,13 +33,21 @@ const getResendState = (user) => {
   return { waitLeftMs, attemptsLeft };
 };
 
+const renderLogin = (res, { error = null, info = null, verifyUrl = null } = {}, status = 200) =>
+  res.status(status).render('login', {
+    title: 'Iniciar sesión',
+    error,
+    info,
+    verifyUrl
+  });
+
 const showRegister = (req, res) => {
   const formStartedAt = Date.now();
   req.session.formStartedAt = formStartedAt;
   res.render('register', { title: 'Registro', error: null, formStartedAt });
 };
 
-const showLogin = (req, res) => res.render('login', { title: 'Iniciar sesión', error: null, info: null, verifyUrl: null });
+const showLogin = (req, res) => renderLogin(res);
 
 const showVerify = async (req, res) => {
   const email = (req.query.email || '').toLowerCase().trim();
@@ -71,7 +79,6 @@ const register = async (req, res) => {
     }
 
     const hashed = await bcrypt.hash(password, 10);
-
     const user = await User.create({
       email,
       password: hashed,
@@ -79,7 +86,6 @@ const register = async (req, res) => {
     });
 
     await issueVerificationCode(user, { force: true });
-
     return res.redirect(`/verify-email?email=${encodeURIComponent(email)}`);
   } catch (error) {
     return res.status(500).render('register', {
@@ -216,23 +222,17 @@ const login = async (req, res) => {
     const { password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).render('login', {
-        title: 'Iniciar sesión',
-        error: 'Debes completar correo y contraseña.',
-        info: null,
-        verifyUrl: null
-      });
+      return renderLogin(res, { error: 'Debes completar correo y contraseña.' }, 400);
     }
 
     const user = await User.findOne({ email });
+    if (!user) {
+      return renderLogin(res, { error: 'Credenciales inválidas.' }, 401);
+    }
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).render('login', {
-        title: 'Iniciar sesión',
-        error: 'Credenciales inválidas.',
-        info: null,
-        verifyUrl: null
-      });
+    const passwordMatches = await bcrypt.compare(password, user.password);
+    if (!passwordMatches) {
+      return renderLogin(res, { error: 'Credenciales inválidas.' }, 401);
     }
 
     if (!user.isVerified) {
@@ -256,27 +256,30 @@ const login = async (req, res) => {
       return res.redirect(`/verify-email?email=${encodeURIComponent(email)}&info=${encodeURIComponent(info)}`);
     }
 
-    req.session.userId = user._id.toString();
-    req.session.userRole = user.role;
-
-    return req.session.save((sessionError) => {
-      if (sessionError) {
-        return res.status(500).render('login', {
-          title: 'Iniciar sesión',
-          error: 'No se pudo guardar tu sesión. Intenta nuevamente.',
-          info: null,
-          verifyUrl: null
-        });
+    req.session.regenerate((regenerateError) => {
+      if (regenerateError) {
+        return renderLogin(res, { error: 'No se pudo iniciar tu sesión. Intenta nuevamente.' }, 500);
       }
-      return res.redirect('/app');
+
+      req.session.userId = user._id.toString();
+      req.session.userRole = user.role;
+      req.session.userEmail = user.email;
+      req.session.user = {
+        id: user._id.toString(),
+        role: user.role,
+        email: user.email
+      };
+      req.session.isAuthenticated = true;
+
+      return req.session.save((sessionError) => {
+        if (sessionError) {
+          return renderLogin(res, { error: 'No se pudo guardar tu sesión. Intenta nuevamente.' }, 500);
+        }
+        return res.redirect('/dashboard');
+      });
     });
   } catch (error) {
-    return res.status(500).render('login', {
-      title: 'Iniciar sesión',
-      error: 'Error al iniciar sesión.',
-      info: null,
-      verifyUrl: null
-    });
+    return renderLogin(res, { error: 'Error al iniciar sesión.' }, 500);
   }
 };
 

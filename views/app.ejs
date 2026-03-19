@@ -1,8 +1,47 @@
 <%- include('partials/header') %>
-<section class="card">
-  <h2>Aplicación Web</h2>
-  <p>Usuario: <strong><%= user.email %></strong></p>
-  <p>Rango actual: <strong><%= user.role %></strong></p>
-  <p>Esta sección representa el acceso a tu aplicación dentro de la web.</p>
+<section class="dashboard-hero card">
+  <div>
+    <p class="eyebrow">Dashboard</p>
+    <h2>Bienvenido, <%= user.email %></h2>
+    <p>Ya has iniciado sesión correctamente en Las Cotorras.</p>
+  </div>
+  <div class="badge-role <%= user.role %>"><%= user.role %></div>
+</section>
+
+<section class="dashboard-grid">
+  <article class="card stat-card">
+    <h3>Estado de cuenta</h3>
+    <p><strong>Correo:</strong> <%= user.email %></p>
+    <p><strong>Verificado:</strong> <%= user.isVerified ? 'Sí' : 'No' %></p>
+    <p><strong>Creada:</strong> <%= new Date(user.createdAt).toLocaleString('es-ES') %></p>
+  </article>
+
+  <article class="card stat-card">
+    <h3>Resumen web</h3>
+    <p><strong>Usuarios totales:</strong> <%= stats.totalUsers %></p>
+    <p><strong>Owners/Admins:</strong> <%= stats.ownerCount %></p>
+    <p><strong>Suscripciones push tuyas:</strong> <%= stats.pushCount %></p>
+  </article>
+
+  <article class="card stat-card">
+    <h3>Herramientas</h3>
+    <div class="button-stack">
+      <a class="btn-link" href="/descargar">Ir a descargar</a>
+      <a class="btn-link" href="/contacto">Ir a contacto</a>
+      <% if (['owner', 'admin'].includes(user.role)) { %>
+        <a class="btn-link" href="/owner-chat">Abrir chat de owners</a>
+      <% } %>
+    </div>
+  </article>
+
+  <article class="card stat-card wide">
+    <h3>Actividad privada</h3>
+    <% if (['owner', 'admin'].includes(user.role)) { %>
+      <p>Tienes acceso al área privada de owners.</p>
+      <p><strong>Mensajes guardados en el chat:</strong> <%= stats.messageCount %></p>
+    <% } else { %>
+      <p>Tu cuenta es de tipo <strong><%= user.role %></strong>. El chat privado es exclusivo para owners y admins.</p>
+    <% } %>
+  </article>
 </section>
 <%- include('partials/footer') %>

@@ -14,7 +14,7 @@
       <a href="/descargar">Descargar</a>
       <a href="/contacto">Contacto</a>
       <% if (currentUser) { %>
-        <a href="/app">Aplicación</a>
+        <a href="/dashboard">Dashboard</a>
         <% if (['owner','admin'].includes(currentUser.role)) { %><a href="/owner-chat">Owner Chat</a><% } %>
         <form action="/logout" method="POST" class="inline"><button type="submit">Salir</button></form>
       <% } else { %>

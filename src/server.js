@@ -20,21 +20,31 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 connectDB();
+app.set('trust proxy', 1);
 
-const sessionMiddleware = session({
+const useMongoSessionStore = process.env.SESSION_DRIVER === 'mongo';
+const sessionConfig = {
   name: 'lascotorras.sid',
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI,
-    collectionName: 'sessions'
-  }),
+  rolling: true,
   cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000,
-    httpOnly: true
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: false
   }
-});
+};
+
+if (useMongoSessionStore) {
+  sessionConfig.store = MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    collectionName: 'sessions'
+  });
+}
+
+const sessionMiddleware = session(sessionConfig);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
@@ -46,9 +56,10 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use(sessionMiddleware);
 
 app.use((req, res, next) => {
-  res.locals.currentUser = req.session.userId
-    ? { id: req.session.userId, role: req.session.userRole }
-    : null;
+  res.locals.currentUser = req.session.user
+    || (req.session.userId
+      ? { id: req.session.userId, role: req.session.userRole, email: req.session.userEmail }
+      : null);
   next();
 });
 
@@ -101,4 +112,5 @@ io.on('connection', async (socket) => {
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Servidor corriendo en ${process.env.BASE_URL || `http://localhost:${PORT}`}`);
+  console.log(`Driver de sesión: ${useMongoSessionStore ? 'mongo' : 'memory'}`);
 });
