@@ -1,0 +1,13 @@
+<%- include('partials/header') %>
+<section class="card small">
+  <h2>Iniciar sesión</h2>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <% if (info) { %><p class="info"><%= info %></p><% } %>
+  <% if (verifyUrl) { %><p><a href="<%= verifyUrl %>">Ir a verificar correo</a></p><% } %>
+  <form method="POST" action="/login">
+    <input type="email" name="email" placeholder="Correo" required>
+    <input type="password" name="password" placeholder="Contraseña" required>
+    <button type="submit">Entrar</button>
+  </form>
+</section>
+<%- include('partials/footer') %>
