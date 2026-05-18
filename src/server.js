@@ -1,4 +1,5 @@
 require('dotenv').config();
+const env = require('./config/env');
 const express = require('express');
 const session = require('express-session');
 const methodOverride = require('method-override');
@@ -12,7 +13,7 @@ const Category = require('./models/Category');
 const app = express();
 
 async function bootstrap() {
-  await connectDB(process.env.MONGODB_URI);
+  await connectDB(env.mongodb.uri);
 
   const rolesCount = await Role.countDocuments();
   if (rolesCount === 0) {
@@ -34,7 +35,7 @@ async function bootstrap() {
     ]);
   }
 
-  app.listen(process.env.PORT || 3000, () => console.log('🚀 http://localhost:' + (process.env.PORT || 3000)));
+  app.listen(env.app.port, () => console.log(`🚀 ${env.app.appUrl}`));
 }
 
 app.set('view engine', 'ejs');
@@ -43,7 +44,7 @@ app.use(express.static(`${__dirname}/public`));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(morgan('dev'));
-app.use(session({ secret: process.env.SESSION_SECRET || 'secret', resave: false, saveUninitialized: false }));
+app.use(session({ secret: env.app.sessionSecret, resave: false, saveUninitialized: false }));
 
 app.use(async (req, res, next) => {
   req.currentUser = req.session.userId ? await User.findById(req.session.userId) : null;

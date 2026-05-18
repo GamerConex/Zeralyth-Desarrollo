@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
   avatar: String,
+  discordId: { type: String, unique: true, sparse: true },
   role: { type: String, default: 'user' },
   isSuspended: { type: Boolean, default: false },
   suspensionReason: String,

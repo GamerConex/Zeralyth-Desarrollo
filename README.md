@@ -3,48 +3,51 @@
 Implementación full-stack inicial basada en la documentación funcional.
 
 ## Requisitos
-- Node.js 20+
+- Node.js 24+
 - MongoDB local o remoto
 
-## Configuración
-1. Copia `.env.example` a `.env`.
-2. Ajusta `MONGODB_URI` y `SESSION_SECRET`.
-3. Instala dependencias:
-   ```bash
-   npm install
-   ```
-4. Carga datos base:
-   ```bash
-   npm run seed
-   ```
-5. Inicia en desarrollo:
-   ```bash
-   npm run dev
-   ```
+## Configuración rápida
+1. Crea `.env` desde `.env.example`.
+2. Configura al menos:
+   - `MONGODB_URI`
+   - `SESSION_SECRET`
+   - `APP_URL`
+   - `PORT`
+3. Inicia app.
 
-## Rutas principales
-- `/` home
-- `/recursos` listado
-- `/recursos/nuevo` crear recurso (requiere login)
-- `/tickets` tickets (requiere login)
-- `/login` y `/registro`
-- `/panel` panel owner
+## Variables de entorno soportadas
+### App
+- `PORT`
+- `NODE_ENV`
+- `APP_URL`
+- `SESSION_SECRET`
 
-## Seguridad incluida
-- Hash de contraseñas con bcrypt
-- Sesiones con express-session
-- Restricción de rutas privadas
+### MongoDB
+- `MONGODB_URI`
+- `MONGODB_DB_NAME`
 
-## Pendiente para producción
-- Subida real de archivos (S3/Cloudinary)
-- OAuth Discord
-- API REST para frontend moderno
-- Tests automatizados
+### SMTP completo
+- `SMTP_ENABLED`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_SECURE`
+- `SMTP_USER`
+- `SMTP_PASS`
+- `SMTP_FROM`
+- `SMTP_TLS_REJECT_UNAUTHORIZED`
 
+### Discord OAuth
+- `DISCORD_OAUTH_ENABLED`
+- `DISCORD_CLIENT_ID`
+- `DISCORD_CLIENT_SECRET`
+- `DISCORD_REDIRECT_URI`
 
-## Deploy en Pterodactyl (sin tocar startup command)
+## Discord login
+- Endpoint inicio: `/auth/discord`
+- Callback: `/auth/discord/callback`
+- Scope utilizado: `identify email`
+
+## Deploy en Pterodactyl
 - **Main File:** `index.js`
 - **Additional Arguments (opcional):** `--trace-warnings`
-- Si tu panel instala dependencias automáticamente, con eso basta para iniciar.
-- Configura variables de entorno en el panel: `MONGODB_URI`, `SESSION_SECRET`, `PORT` (si aplica), y opcional SMTP.
-- La app ahora auto-crea roles/categorías base en el primer arranque (no necesitas correr `npm run seed`).
+- Variables mínimas: `MONGODB_URI`, `SESSION_SECRET`, `APP_URL`, `PORT`

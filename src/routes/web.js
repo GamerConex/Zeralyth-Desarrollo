@@ -7,6 +7,7 @@ const Resource = require('../models/Resource');
 const Ticket = require('../models/Ticket');
 const { requireAuth, requireOwner } = require('../middleware/auth');
 const { sendEmail } = require('../services/email');
+const env = require('../config/env');
 
 const router = express.Router();
 
@@ -52,7 +53,69 @@ router.post('/tickets', requireAuth, async (req, res) => {
   res.redirect('/tickets');
 });
 
-router.get('/login', (_, res) => res.render('login'));
+
+router.get('/auth/discord', (req, res) => {
+  if (!env.discord.enabled) return res.status(503).send('Discord OAuth deshabilitado');
+  const state = uuid();
+  req.session.discordState = state;
+  const params = new URLSearchParams({
+    client_id: env.discord.clientId,
+    redirect_uri: env.discord.redirectUri,
+    response_type: 'code',
+    scope: 'identify email',
+    state
+  });
+  return res.redirect(`https://discord.com/api/oauth2/authorize?${params.toString()}`);
+});
+
+router.get('/auth/discord/callback', async (req, res) => {
+  if (!env.discord.enabled) return res.redirect('/login');
+  if (!req.query.code || !req.query.state || req.query.state !== req.session.discordState) return res.redirect('/login');
+
+  const tokenRes = await fetch('https://discord.com/api/oauth2/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: env.discord.clientId,
+      client_secret: env.discord.clientSecret,
+      grant_type: 'authorization_code',
+      code: req.query.code,
+      redirect_uri: env.discord.redirectUri
+    })
+  });
+  if (!tokenRes.ok) return res.redirect('/login');
+  const tokenData = await tokenRes.json();
+
+  const meRes = await fetch('https://discord.com/api/users/@me', {
+    headers: { Authorization: `Bearer ${tokenData.access_token}` }
+  });
+  if (!meRes.ok) return res.redirect('/login');
+  const me = await meRes.json();
+
+  let user = await User.findOne({ discordId: me.id });
+  if (!user && me.email) user = await User.findOne({ email: me.email });
+
+  if (!user) {
+    user = await User.create({
+      username: `${me.username}_${String(me.id).slice(-4)}`,
+      email: me.email || `${me.id}@discord.local`,
+      password: uuid(),
+      avatar: me.avatar ? `https://cdn.discordapp.com/avatars/${me.id}/${me.avatar}.png` : undefined,
+      discordId: me.id,
+      role: 'user'
+    });
+  } else if (!user.discordId) {
+    user.discordId = me.id;
+    if (me.avatar) user.avatar = `https://cdn.discordapp.com/avatars/${me.id}/${me.avatar}.png`;
+    await user.save();
+  }
+
+  req.session.userId = user._id;
+  req.session.discordState = null;
+  return res.redirect('/');
+});
+
+router.get('/login', (_, res) => res.render('login', { discordEnabled: env.discord.enabled }));
 router.get('/registro', (_, res) => res.render('register'));
 
 router.post('/registro', async (req, res) => {
