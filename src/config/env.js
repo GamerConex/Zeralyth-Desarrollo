@@ -16,8 +16,7 @@ const env = {
     sessionSecret: process.env.SESSION_SECRET || 'change_this_secret'
   },
   mongodb: {
-    uri: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/lascotorras',
-    dbName: process.env.MONGODB_DB_NAME || 'lascotorras'
+    uri: process.env.MONGODB_URI || 'mongodb+srv://vixon:Yansi@vixon.z1v83vq.mongodb.net/lascotorras'
   },
   discord: {
     enabled: toBool(process.env.DISCORD_OAUTH_ENABLED, false),

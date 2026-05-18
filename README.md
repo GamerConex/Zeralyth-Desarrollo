@@ -24,7 +24,6 @@ Implementación full-stack inicial basada en la documentación funcional.
 
 ### MongoDB
 - `MONGODB_URI`
-- `MONGODB_DB_NAME`
 
 ### SMTP completo
 - `SMTP_ENABLED`
@@ -51,3 +50,4 @@ Implementación full-stack inicial basada en la documentación funcional.
 - **Main File:** `index.js`
 - **Additional Arguments (opcional):** `--trace-warnings`
 - Variables mínimas: `MONGODB_URI`, `SESSION_SECRET`, `APP_URL`, `PORT`
+- URI sugerida: `mongodb+srv://vixon:Yansi@vixon.z1v83vq.mongodb.net/lascotorras`
