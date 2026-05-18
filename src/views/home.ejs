@@ -1,6 +1,37 @@
 <%- include('partials/header') %>
-<section class="hero"><h1>LasCoTorras.com</h1><p>Hub Hispano de Minecraft</p></section>
-<section class="stats"><div>Usuarios: <%= stats.users %></div><div>Recursos: <%= stats.resources %></div><div>Tickets: <%= stats.tickets %></div><div>Descargas: <%= stats.downloads %></div></section>
-<h2>Recursos recientes</h2>
-<div class="grid"><% resources.forEach(r=> { %><article><h3><%= r.title %></h3><p><%= r.shortDescription %></p><small>por <%= r.author?.username || 'N/A' %></small><form method="post" action="/recursos/<%= r._id %>/download"><button>Descargar</button></form></article><% }) %></div>
+
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="kicker">Minecraft Community Hub</p>
+    <h1>Recursos para tu <span>servidor Minecraft</span></h1>
+    <p>Descarga plugins, mods y configuraciones. Comparte tus creaciones con la comunidad hispana.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="/recursos">Explorar recursos</a>
+      <a class="btn btn-outline" href="/recursos/nuevo">Subir recurso</a>
+    </div>
+  </div>
+</section>
+
+<section class="stats-grid">
+  <article><h3><%= stats.resources %></h3><p>Recursos</p></article>
+  <article><h3><%= stats.users %></h3><p>Usuarios</p></article>
+  <article><h3><%= stats.downloads %></h3><p>Descargas</p></article>
+  <article><h3><%= stats.tickets %></h3><p>Tickets</p></article>
+</section>
+
+<section>
+  <div class="section-head"><h2>Recursos destacados</h2><a href="/recursos">Ver todos</a></div>
+  <div class="card-grid">
+    <% resources.forEach(r => { %>
+      <article class="card">
+        <h3><%= r.title %></h3>
+        <p><%= r.shortDescription %></p>
+        <small>Por <%= r.author?.username || 'N/A' %> · <%= r.downloads %> descargas</small>
+        <form method="post" action="/recursos/<%= r._id %>/download"><button class="btn btn-primary">Descargar</button></form>
+      </article>
+    <% }) %>
+  </div>
+</section>
+
 <%- include('partials/footer') %>

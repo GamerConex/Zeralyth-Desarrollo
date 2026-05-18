@@ -1,1 +1,32 @@
-<!doctype html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>LasCoTorras</title><link rel="stylesheet" href="/css/styles.css"></head><body><nav><a href="/">Inicio</a><a href="/recursos">Recursos</a><a href="/tickets">Tickets</a><a href="/panel">Panel</a><% if (currentUser) { %><form method="post" action="/logout"><button>Cerrar sesión</button></form><% } else { %><a href="/login">Login</a><a href="/registro">Registro</a><% } %></nav><main>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LasCoTorras.com</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav-wrap">
+      <a class="brand" href="/"><span class="brand-dot">🦜</span> LasCoTorras<span>.com</span></a>
+      <nav class="nav-links">
+        <a href="/">Inicio</a>
+        <a href="/recursos">Recursos</a>
+        <a href="/tickets">Tickets</a>
+        <% if (currentUser?.role === 'owner') { %><a href="/panel">Panel</a><% } %>
+      </nav>
+      <div class="auth-actions">
+        <% if (currentUser) { %>
+          <form method="post" action="/logout"><button class="btn btn-outline">Cerrar sesión</button></form>
+        <% } else { %>
+          <a href="/login" class="btn btn-outline">Login</a>
+          <a href="/registro" class="btn btn-primary">Registro</a>
+        <% } %>
+      </div>
+    </div>
+  </header>
+  <main class="container">
