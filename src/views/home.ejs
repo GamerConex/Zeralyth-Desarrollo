@@ -1,0 +1,6 @@
+<%- include('partials/header') %>
+<section class="hero"><h1>LasCoTorras.com</h1><p>Hub Hispano de Minecraft</p></section>
+<section class="stats"><div>Usuarios: <%= stats.users %></div><div>Recursos: <%= stats.resources %></div><div>Tickets: <%= stats.tickets %></div><div>Descargas: <%= stats.downloads %></div></section>
+<h2>Recursos recientes</h2>
+<div class="grid"><% resources.forEach(r=> { %><article><h3><%= r.title %></h3><p><%= r.shortDescription %></p><small>por <%= r.author?.username || 'N/A' %></small><form method="post" action="/recursos/<%= r._id %>/download"><button>Descargar</button></form></article><% }) %></div>
+<%- include('partials/footer') %>

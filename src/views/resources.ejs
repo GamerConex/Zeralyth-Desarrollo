@@ -1,0 +1,1 @@
+<%- include('partials/header') %><h1>Recursos</h1><a href="/recursos/nuevo">Subir recurso</a><div class="grid"><% resources.forEach(r=>{ %><article><h3><%= r.title %></h3><p><%= r.shortDescription %></p></article><% }) %></div><%- include('partials/footer') %>
