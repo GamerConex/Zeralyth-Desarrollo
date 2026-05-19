@@ -13,12 +13,25 @@
   <header class="topbar">
     <div class="container nav-wrap">
       <a class="brand" href="/"><span class="brand-dot">🦜</span> LasCoTorras<span>.com</span></a>
-      <nav class="nav-links">
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+
+      <nav class="nav-links" id="mainMenu">
         <a href="/">Inicio</a>
-        <a href="/recursos">Recursos</a><a href="/foro">Foro</a>
+        <a href="/recursos">Recursos</a>
+        <a href="/foro">Foro</a>
         <a href="/tickets">Tickets</a>
         <% if (currentUser?.role === 'owner') { %><a href="/panel">Panel</a><% } %>
+        <div class="menu-auth-mobile">
+          <% if (currentUser) { %>
+            <form method="post" action="/logout"><button class="btn btn-outline">Cerrar sesión</button></form>
+          <% } else { %>
+            <a href="/login" class="btn btn-outline">Login</a>
+            <a href="/registro" class="btn btn-primary">Registro</a>
+          <% } %>
+        </div>
       </nav>
+
       <div class="auth-actions">
         <% if (currentUser) { %>
           <form method="post" action="/logout"><button class="btn btn-outline">Cerrar sesión</button></form>
@@ -30,3 +43,15 @@
     </div>
   </header>
   <main class="container">
+  <script>
+    (function () {
+      const toggle = document.getElementById('menuToggle');
+      const menu = document.getElementById('mainMenu');
+      if (!toggle || !menu) return;
+      toggle.addEventListener('click', function () {
+        menu.classList.toggle('open');
+        const expanded = menu.classList.contains('open');
+        toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      });
+    })();
+  </script>
