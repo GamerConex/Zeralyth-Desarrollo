@@ -21,6 +21,16 @@ router.get('/', async (req, res) => {
   res.render('home', { resources, stats: { users, resources: resources.length, tickets, downloads: totalDownloads } });
 });
 
+router.get('/foro', async (req, res) => {
+  const stats = { threads: 23451, replies: 156891, members: await User.countDocuments(), online: 342 };
+  const sections = [
+    { name: 'Optimización y Rendimiento', color: 'blue', items:[{title:'Optimización y Rendimiento', desc:'Mejora el TPS y rendimiento de tu servidor', posts:987}]},
+    { name: 'Desarrollo', color: 'purple', items:[{title:'Desarrollo de Plugins', desc:'Programación en Java para Spigot/Paper', posts:1243},{title:'Skripts', desc:'Scripting con Skript y addons', posts:891}]},
+    { name: 'Comunidad', color: 'orange', items:[{title:'Presentaciones', desc:'Preséntate a la comunidad', posts:3421},{title:'Servidores', desc:'Publicita tu servidor Minecraft', posts:2187},{title:'Noticias y Anuncios', desc:'Novedades de la plataforma y Minecraft', posts:456}]}
+  ];
+  res.render('foro', { stats, sections });
+});
+
 router.get('/recursos', async (req, res) => {
   const resources = await Resource.find().sort({ createdAt: -1 }).populate('author');
   res.render('resources', { resources });
