@@ -74,3 +74,7 @@ form{max-width:680px}
   .section-head{align-items:flex-start;flex-direction:column}
   .footer-inner{flex-direction:column;align-items:flex-start}
 }
+
+.pretty-form label{display:block;margin:.45rem 0 .2rem;color:#dce8ff;font-weight:700}
+.msg{padding:.8rem 1rem;border-radius:12px;margin-top:.8rem;font-weight:700}.msg.error{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.5);color:#fecaca}.msg.success{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.5);color:#bbf7d0}
+.list-clean{list-style:none;padding:0;margin:1rem 0;display:grid;gap:.6rem}.list-clean li{background:linear-gradient(180deg,#101b2f,#0b1220);border:1px solid var(--line);padding:.8rem;border-radius:12px}

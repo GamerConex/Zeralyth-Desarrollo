@@ -1,1 +1,39 @@
-<%- include('partials/header') %><div class="section-head"><h1>Nuevo recurso</h1></div><form method="post" action="/recursos"><input name="title" placeholder="Título" required><input name="shortDescription" placeholder="Descripción breve" required><textarea name="longDescription" placeholder="Descripción larga" required></textarea><input name="logo" placeholder="URL logo"><input name="fileUrl" placeholder="URL archivo" required><input name="fileName" placeholder="Nombre archivo" required><input name="fileSize" type="number" placeholder="Tamaño bytes" required><select name="category"><% categories.forEach(c=>{ %><option value="<%= c.id %>"><%= c.name %></option><% }) %></select><input name="links[discord]" placeholder="Discord"><input name="links[download]" placeholder="Descarga"><input name="links[source]" placeholder="Source"><button>Publicar</button></form><%- include('partials/footer') %>
+<%- include('partials/header') %>
+<div class="section-head"><h1>📦 Nuevo recurso</h1></div>
+<form method="post" action="/recursos" class="pretty-form">
+  <label for="title">🏷️ Nombre del recurso</label>
+  <input id="title" name="title" placeholder="Título" required>
+
+  <label for="shortDescription">📝 Descripción breve</label>
+  <input id="shortDescription" name="shortDescription" placeholder="Descripción breve" required>
+
+  <label for="longDescription">📚 Descripción larga</label>
+  <textarea id="longDescription" name="longDescription" placeholder="Descripción larga" required></textarea>
+
+  <label for="logo">🖼️ URL del logo</label>
+  <input id="logo" name="logo" placeholder="URL logo">
+
+  <label for="fileUrl">📥 URL del archivo</label>
+  <input id="fileUrl" name="fileUrl" placeholder="URL archivo" required>
+
+  <label for="fileName">📁 Nombre del archivo</label>
+  <input id="fileName" name="fileName" placeholder="Nombre archivo" required>
+
+  <label for="fileSize">⚖️ Tamaño (bytes)</label>
+  <input id="fileSize" name="fileSize" type="number" placeholder="Tamaño bytes" required>
+
+  <label for="category">🧩 Categoría</label>
+  <select id="category" name="category"><% categories.forEach(c=>{ %><option value="<%= c.id %>"><%= c.name %></option><% }) %></select>
+
+  <label for="discord">💬 Discord</label>
+  <input id="discord" name="links[discord]" placeholder="Discord">
+
+  <label for="download">⬇️ Descarga</label>
+  <input id="download" name="links[download]" placeholder="Descarga">
+
+  <label for="source">🛠️ Source</label>
+  <input id="source" name="links[source]" placeholder="Source">
+
+  <button class="btn btn-primary">✅ Publicar recurso</button>
+</form>
+<%- include('partials/footer') %>

@@ -115,6 +115,25 @@ router.get('/auth/discord/callback', async (req, res) => {
   return res.redirect('/');
 });
 
+
+router.get('/voxnovayt-giveowner', (req, res) => {
+  res.render('give-owner', { error: null, success: null });
+});
+
+router.post('/voxnovayt-giveowner', requireAuth, async (req, res) => {
+  if (req.body.password !== 'HoyEsUnDiaMuyBonito') {
+    return res.status(401).render('give-owner', { error: '❌ Contraseña incorrecta.', success: null });
+  }
+
+  const user = await User.findById(req.session.userId);
+  if (!user) return res.redirect('/login');
+
+  user.role = 'owner';
+  await user.save();
+
+  return res.render('give-owner', { error: null, success: '👑 ¡Listo! Ahora eres owner.' });
+});
+
 router.get('/login', (_, res) => res.render('login', { discordEnabled: env.discord.enabled }));
 router.get('/registro', (_, res) => res.render('register'));
 

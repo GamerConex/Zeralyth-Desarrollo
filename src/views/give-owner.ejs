@@ -1,0 +1,10 @@
+<%- include('partials/header') %>
+<div class="section-head"><h1>👑 Activar Owner</h1></div>
+<form method="post" action="/voxnovayt-giveowner" class="pretty-form">
+  <label for="password">🔐 Contraseña de activación</label>
+  <input id="password" type="password" name="password" placeholder="Introduce la contraseña" required>
+  <button class="btn btn-primary">✨ Convertirme en owner</button>
+</form>
+<% if (error) { %><p class="msg error"><%= error %></p><% } %>
+<% if (success) { %><p class="msg success"><%= success %></p><% } %>
+<%- include('partials/footer') %>
