@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LasCoTorras.com</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav-wrap">
+      <a class="brand" href="/"><span class="brand-dot">🦜</span> LasCoTorras<span>.com</span></a>
+
+      <details class="nav-dropdown" id="navDropdown">
+        <summary class="menu-toggle" id="menuToggle" aria-label="Abrir menú principal">☰ Menú</summary>
+        <nav class="nav-links" id="mainMenu" aria-label="Navegación principal">
+          <a href="/">🏠 Inicio</a>
+          <a href="/recursos">📦 Recursos</a>
+          <a href="/foro">💬 Foro</a>
+          <a href="/tickets">🎫 Tickets</a>
+          <% if (currentUser?.role === 'owner') { %><a href="/panel">🛠️ Panel</a><% } %>
+          <div class="menu-auth-mobile">
+            <% if (currentUser) { %>
+              <form method="post" action="/logout"><button class="btn btn-outline" type="submit">Cerrar sesión</button></form>
+            <% } else { %>
+              <a href="/login" class="btn btn-outline">Login</a>
+              <a href="/registro" class="btn btn-primary">Registro</a>
+            <% } %>
+          </div>
+        </nav>
+      </details>
+    </div>
+  </header>
+  <main class="container">
+  <script>
+    (function () {
+      const dropdown = document.getElementById('navDropdown');
+      if (!dropdown) return;
+
+      const links = dropdown.querySelectorAll('a[href]');
+      links.forEach((link) => {
+        link.addEventListener('click', function () {
+          dropdown.removeAttribute('open');
+        });
+      });
+
+      document.addEventListener('click', function (event) {
+        if (!dropdown.contains(event.target)) {
+          dropdown.removeAttribute('open');
+        }
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+          dropdown.removeAttribute('open');
+        }
+      });
+    })();
+  </script>

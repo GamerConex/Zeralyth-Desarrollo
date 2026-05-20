@@ -1,0 +1,14 @@
+<%- include('partials/header') %>
+<div class="section-head"><h1>📊 Panel Admin</h1><span><%= currentUser?.username || '' %></span></div>
+<section class="stats-grid">
+  <article><h3><%= users.length %></h3><p>Usuarios</p></article>
+  <article><h3><%= resources.length %></h3><p>Recursos</p></article>
+  <article><h3><%= roles.length %></h3><p>Roles</p></article>
+  <article><h3><%= tickets.length %></h3><p>Tickets</p></article>
+</section>
+
+<section class="panel-box"><h2>👥 Usuarios (<%= users.length %>)</h2><div class="card-grid"><% users.forEach(u=>{ %><article class="card"><h3><%= u.username %></h3><p><%= u.email %></p><small>Rol: <%= u.role %></small><button class="btn btn-primary">Gestionar</button></article><% }) %></div></section>
+<section class="panel-box"><h2>🛡️ Roles (<%= roles.length %>)</h2><div class="card-grid"><% roles.forEach(r=>{ %><article class="card"><h3><span class="role-dot" style="background:<%= r.color %>"></span> <%= r.name %></h3><small><%= r.color %></small></article><% }) %></div></section>
+<section class="panel-box"><h2>🧩 Crear nuevo rol</h2><form method="post" action="/panel/roles" class="pretty-form"><label>ID del rol</label><input name="id" placeholder="desarrollador"><label>Nombre</label><input name="name" placeholder="Desarrollador" required><label>Color HEX</label><input name="color" placeholder="#16a34a"><button class="btn btn-primary">+ Crear rol</button></form></section>
+<section class="panel-box"><h2>🎫 Tickets (<%= tickets.length %>)</h2><ul class="list-clean"><% tickets.forEach(t=>{ %><li><strong><%= t.title %></strong><br><span class="badge"><%= t.status %></span></li><% }) %></ul></section>
+<%- include('partials/footer') %>

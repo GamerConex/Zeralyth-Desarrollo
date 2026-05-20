@@ -1,0 +1,12 @@
+<%- include('partials/header') %>
+<div class="section-head"><h1>Recursos</h1><a class="btn btn-primary" href="/recursos/nuevo">Subir recurso</a></div>
+<div class="card-grid">
+  <% resources.forEach(r=>{ %>
+    <article class="card">
+      <h3><%= r.title %></h3>
+      <p><%= r.shortDescription %></p>
+      <small><%= r.category %> · <%= r.downloads %> descargas</small>
+    </article>
+  <% }) %>
+</div>
+<%- include('partials/footer') %>

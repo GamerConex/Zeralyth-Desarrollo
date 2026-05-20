@@ -1,0 +1,29 @@
+<%- include('partials/header') %>
+<div class="section-head"><h1>💬 Foro</h1></div>
+<section class="panel-box">
+  <h2>Estadísticas del Foro</h2>
+  <div class="stats-grid">
+    <article><h3><%= stats.threads.toLocaleString('es-ES') %></h3><p>Hilos</p></article>
+    <article><h3><%= stats.replies.toLocaleString('es-ES') %></h3><p>Respuestas</p></article>
+    <article><h3><%= stats.members.toLocaleString('es-ES') %></h3><p>Miembros</p></article>
+    <article><h3><%= stats.online.toLocaleString('es-ES') %></h3><p>En línea</p></article>
+  </div>
+</section>
+<% sections.forEach(sec => { %>
+  <section class="panel-box">
+    <h2><%= sec.name %></h2>
+    <div class="list-clean">
+    <% sec.items.forEach(it => { %>
+      <div class="forum-row">
+        <div>
+          <strong><%= it.title %></strong>
+          <p><%= it.desc %></p>
+        </div>
+        <span><%= it.posts %> posts</span>
+      </div>
+    <% }) %>
+    </div>
+  </section>
+<% }) %>
+<section class="panel-box"><h2>🎟️ Soporte Privado</h2><p>¿Tienes un problema? Abre un ticket privado. Solo tú y el staff podréis verlo.</p><a class="btn btn-primary" href="/tickets">Abrir ticket de soporte</a></section>
+<%- include('partials/footer') %>

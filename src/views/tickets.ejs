@@ -1,0 +1,7 @@
+<%- include('partials/header') %>
+<div class="section-head"><h1>Mis Tickets</h1><button class="btn btn-primary">+ Nuevo ticket</button></div><p class="muted">Soporte técnico y reportes</p>
+<section class="panel-box"><h2>Tus Tickets (<%= tickets.length %>)</h2>
+<% if(!tickets.length){ %><p class="empty">No tienes tickets aún</p><% } %>
+<ul class="list-clean"><% tickets.forEach(t=>{ %><li><strong>🟠 <%= t.title %></strong><div class="ticket-meta"><span>ticket-<%= currentUser?.username || 'user' %>-<%= t._id %></span><span class="badge"><%= t.priority %></span><span class="badge status"><%= t.status %></span></div></li><% }) %></ul></section>
+<section class="panel-box"><h2>Crear Nuevo Ticket</h2><form method="post" action="/tickets" class="pretty-form"><label>Título</label><input name="title" placeholder="Resumen del problema" required><label>Descripción</label><textarea name="description" placeholder="Describe el problema en detalle" required></textarea><label>Prioridad</label><select name="priority"><option>normal</option><option>low</option><option>medium</option><option>high</option></select><div class="actions"><button class="btn btn-primary">Crear ticket</button><button type="reset" class="btn btn-outline">Cancelar</button></div></form></section>
+<%- include('partials/footer') %>
